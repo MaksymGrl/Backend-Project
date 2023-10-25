@@ -12,8 +12,8 @@ This project was developed as part of the KPI server software development course
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/yourrepositoryname.git
-   cd yourrepositoryname
+   git clone https://github.com/MaksymGrl/BackendProject
+   cd BackendProject
 2. **Setting up Virtual Environment (Optional but recommended):**
     ```bash
     python -m venv env
