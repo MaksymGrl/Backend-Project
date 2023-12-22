@@ -3,9 +3,31 @@ from datetime import datetime
 from flask import make_response, request, jsonify
 import json
 
-users = {}
-categories = {}
-records = {}
+# In-memory data storage
+users = {
+    "user1": {"name": "Alice"},
+    "user2": {"name": "Bob"}
+}
+
+categories = {
+    "category1": {"category_name": "Food"},
+    "category2": {"category_name": "Transportation"}
+}
+
+records = {
+    "record1": {
+        "user_id": "user1",
+        "category_id": "category1",
+        "timestamp": "2023-01-01T12:00:00Z",
+        "amount": 15.75
+    },
+    "record2": {
+        "user_id": "user2",
+        "category_id": "category2",
+        "timestamp": "2023-01-02T08:30:00Z",
+        "amount": 50.00
+    }
+}
 # Helper functions
 user_counter = 1
 category_counter = 1
