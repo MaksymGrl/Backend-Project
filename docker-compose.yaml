@@ -7,9 +7,15 @@ services:
      context: .
      dockerfile: Dockerfile
    environment:
+     POSTGRES_USER: maksym
+     POSTGRES_PASSWORD: 123456
+     POSTGRES_HOST: db
+     POSTGRES_DB: backendProjDB
      PORT: "8080"
    ports:
      - "5000:8080"
+   depends_on:
+     - db
  db:
    image: postgres
    environment:

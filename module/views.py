@@ -4,8 +4,8 @@ from module import app
 from datetime import datetime
 from flask import make_response, request, jsonify
 import json
-from module.schemas import UserSchema, CategorySchema, RecordSchema
-from module.dbModels import User, Category, Record
+from module.schemas import UserSchema, CategorySchema, RecordSchema, CurrencySchema
+from module.dbModels import User, Category, Record, Currency
 
 # Flask routes
 
@@ -21,6 +21,54 @@ def healthcheck():
     }
     response = json.dumps(response, indent=4)
     return make_response((response, 200, {'Content-Type': 'application/json'}))
+
+@app.route('/currency', methods=['POST'])
+def add_currency():
+    currency_schema = CurrencySchema()
+    try:
+        currency_data = currency_schema.load(request.json)
+    except ValidationError as err:
+        return jsonify(err.messages), 400
+
+    new_currency = Currency(**currency_data)
+    db.session.add(new_currency)
+    db.session.commit()
+    return jsonify({'currency_id': new_currency.id}), 201
+
+@app.route('/currency', methods=['GET'])
+def get_currencies():
+    currencies = Currency.query.all()
+    currency_schema = CurrencySchema(many=True)
+    return jsonify(currency_schema.dump(currencies)), 200
+
+@app.route('/currency/<int:currency_id>', methods=['DELETE'])
+def delete_currency(currency_id):
+    currency = Currency.query.get(currency_id)
+    if currency:
+        db.session.delete(currency)
+        db.session.commit()
+        return jsonify({}), 204
+    return jsonify({'error': 'Currency not found'}), 404
+
+@app.route('/user/<int:user_id>/set_currency', methods=['POST'])
+def set_user_currency(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    try:
+        currency_id = request.json.get('currency_id')
+        currency = Currency.query.get(currency_id)
+        if not currency:
+            return jsonify({'error': 'Currency not found'}), 404
+
+        user.default_currency_id = currency_id
+        db.session.commit()
+        return jsonify({'message': 'Default currency updated successfully'}), 200
+    except KeyError:
+        return jsonify({'error': 'currency_id is required'}), 400
+    except ValidationError as err:
+        return jsonify(err.messages), 400
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -96,11 +144,21 @@ def add_record():
     except ValidationError as err:
         return jsonify(err.messages), 400
 
+    user_id = record_data['user_id']
+    currency_id = record_data.get('currency_id')
+
+    # If currency_id is not provided, use the user's default currency
+    if currency_id is None:
+        user = User.query.get(user_id)
+        if user and user.default_currency_id:
+            currency_id = user.default_currency_id
+
     new_record = Record(
-        user_id=record_data['user_id'],
+        user_id=user_id,
         category_id=record_data['category_id'],
+        amount=record_data['amount'],
         timestamp=datetime.utcnow(),
-        amount=record_data['amount']
+        currency_id=currency_id
     )
     db.session.add(new_record)
     db.session.commit()
