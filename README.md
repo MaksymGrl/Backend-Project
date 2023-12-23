@@ -1,6 +1,6 @@
 # Backend Project
 
-This project was developed as part of the KPI server software development course. Right now it has a simple Flask application that provides a health check endpoint.
+This project was developed as part of the KPI server software development course. Right now it has a simple Flask application that provides a health check endpoint and REST API endpoint to work with in-memory stored data of users, categories and records.
 
 ## Prerequisites
 
