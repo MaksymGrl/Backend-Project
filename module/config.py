@@ -3,8 +3,9 @@ import os
 PROPAGATE_EXCEPTIONS = True
 FLASK_DEBUG = True
 SQLALCHEMY_DATABASE_URI = 'postgresql://maksym:TaBTYw7Ssbjns3eaYzscjDoYi0iSCM5c@dpg-cm3ldp6n7f5s73bprakg-a.oregon-postgres.render.com/backendprojectdb'
+#SQLALCHEMY_DATABASE_URI = f'postgresql://{os.environ["POSTGRES_USER"]}:{os.environ["POSTGRES_PASSWORD"]}@{os.environ["POSTGRES_HOST"]}/{os.environ["POSTGRES_DB"]}'
 #SQLALCHEMY_DATABASE_URI = 'postgresql://maksym:123456@localhost/backendProjDB'
-SQLALCHEMY_TRACK_MODIFICATIONS = False;
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 API_TITLE = "BackendProject REST API"
 API_VERSION = "v1"
 OPENAPI_VERSION = "3.0.3"
