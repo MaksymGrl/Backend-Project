@@ -3,6 +3,7 @@ from marshmallow import Schema, fields
 class UserSchema(Schema):
     id = fields.Str()
     name = fields.Str()
+    password = fields.Str(load_only=True)
     default_currency_id = fields.Int()
 
 class CategorySchema(Schema):
